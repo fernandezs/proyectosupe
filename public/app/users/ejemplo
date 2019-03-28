@@ -1,0 +1,31 @@
+    public function getAddEditRemoveColumn()
+    {
+        return view('datatables.eloquent.add-edit-remove-column');
+    }
+
+    public function getAddEditRemoveColumnData()
+    {
+        $users = User::select(['id', 'name', 'email', 'password', 'created_at', 'updated_at']);
+
+        return Datatables::of($users)
+            ->addColumn('action', function ($user) {
+                return '<a href="#edit-'.$user->id.'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
+            })
+            ->editColumn('id', 'ID: {{$id}}')
+            ->removeColumn('password')
+            ->make(true);
+    }
+
+        $('#users-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: 'http://datatables.yajrabox.com/eloquent/add-edit-remove-column-data',
+            columns: [
+                {data: 'id', name: 'id'},
+                {data: 'name', name: 'name'},
+                {data: 'email', name: 'email'},
+                {data: 'created_at', name: 'created_at'},
+                {data: 'updated_at', name: 'updated_at'},
+                {data: 'action', name: 'action', orderable: false, searchable: false}
+            ]
+        });
